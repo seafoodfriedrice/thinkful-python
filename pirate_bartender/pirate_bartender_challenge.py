@@ -17,6 +17,11 @@ def ask_questions():
             preferences[question] = False
     return preferences
 
+def random_cocktail_name():
+    adjectives = ["Fluffy", "Salty", "Bitter", "Fruity", "Strong", "Epic", "Crunchy", "Sandy"]
+    nouns = ["Sea-Dog", "Puppy", "Island", "Spongebob", "Chinchilla", "Whale-Shark", "Tsunami"]
+    return "{} {}".format(random.choice(adjectives), random.choice(nouns))
+
 def construct_drink(preferences):
     ingredients = {
         "strong": ["glug of rum", "slug of whisky", "splash of gin"],
@@ -31,16 +36,22 @@ def construct_drink(preferences):
             drink.append(random.choice(ingredients[p]))
     return drink
 
-def random_cocktail_name():
-    adjectives = ["Fluffy", "Salty", "Bitter", "Fruity", "Strong", "Epic", "Crunchy", "Sandy"]
-    nouns = ["Sea-Dog", "Puppy", "Island", "Spongebob", "Chinchilla", "Whale-Shark", "Tsunami"]
-    return "{} {}".format(random.choice(adjectives), random.choice(nouns))
+customers = {}
 
 def main():
-    drinks_preferred = construct_drink(ask_questions())
-    print "\nYour drink, the {}, has the following ingredients:".format(random_cocktail_name())
-    for ingredient in drinks_preferred:
+    customer_name = raw_input("What be yer name matey? ")
+    if customer_name not in customers:
+        customers[customer_name] = {}
+        customers[customer_name]["drink_name"] = random_cocktail_name()
+        customers[customer_name]["drink_ingredients"] = construct_drink(ask_questions())
+    else:
+        print "\nAy, welcome back {}. We got yer drink on file.".format(customer_name)
+    print "\nYour drink, the {}, has the following ingredients:".format(customers[customer_name]["drink_name"])
+    for ingredient in customers[customer_name]["drink_ingredients"]:
         print "* {}".format(ingredient)
 
 if __name__ == '__main__':
-    main()
+    again = "y"
+    while again != "n":
+        main()
+        again = raw_input("\nAnother round? ")
