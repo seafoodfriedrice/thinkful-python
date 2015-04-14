@@ -43,9 +43,20 @@ class Band(object):
         self.members.remove(musician)
 
     def start_playing(self):
-        for member in members:
+        for member in self.members:
             if isinstance(member, Drummer):
                 member.four_count()
-        for member in members:
+        for member in self.members:
             if not isinstance(member, Drummer):
-                member.solo(4)
+                member.solo(10)
+
+blaze = Guitarist()
+lazer = Drummer()
+blazer = Bassist()
+
+pythons = Band()
+pythons.hire(blaze)
+pythons.hire(lazer)
+pythons.hire(blazer)
+
+pythons.start_playing()
