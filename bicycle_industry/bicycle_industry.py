@@ -8,6 +8,7 @@ class Bicycle(object):
         self.price = self.production_cost + (self.production_cost *
                           (float(self.margin_percent) / 100))
 
+
 class BicycleShop(object):
     def __init__(self, shop_name):
         self.shop_name = shop_name
@@ -56,6 +57,7 @@ class BicycleShop(object):
 
     """def display_profit(self):"""
 
+
 class Customer(object):
     def __init__(self, name, budget):
         self.name = name
@@ -63,39 +65,43 @@ class Customer(object):
         self.bicycles_owned = []
     """def purchase_bicycle(self, bicycle_shop, bicycle_model):"""
 
-my_shop = BicycleShop("Pedal Files")
-my_shop.add_bicycle(Bicycle("Green", 50, 150))
-my_shop.add_bicycle(Bicycle("Green", 50, 150))
-my_shop.add_bicycle(Bicycle("Green", 50, 150))
-my_shop.add_bicycle(Bicycle("Blue", 75, 200))
-my_shop.add_bicycle(Bicycle("Blue", 75, 200))
-my_shop.add_bicycle(Bicycle("Red", 100, 250))
-my_shop.add_bicycle(Bicycle("Silver", 125, 300))
-my_shop.add_bicycle(Bicycle("Gold", 125, 500))
-my_shop.add_bicycle(Bicycle("Black", 100, 750))
+def main():
+    my_shop = BicycleShop("Pedal Files")
+    my_shop.add_bicycle(Bicycle("Green", 50, 150))
+    my_shop.add_bicycle(Bicycle("Green", 50, 150))
+    my_shop.add_bicycle(Bicycle("Green", 50, 150))
+    my_shop.add_bicycle(Bicycle("Blue", 75, 200))
+    my_shop.add_bicycle(Bicycle("Blue", 75, 200))
+    my_shop.add_bicycle(Bicycle("Red", 100, 250))
+    my_shop.add_bicycle(Bicycle("Silver", 125, 300))
+    my_shop.add_bicycle(Bicycle("Gold", 125, 500))
+    my_shop.add_bicycle(Bicycle("Black", 100, 750))
 
-print "{}'s store balance is ${}.".format(my_shop.shop_name, my_shop.store_balance)
-print "{}'s store profit is ${}.\n".format(my_shop.shop_name, my_shop.profit)
+    print "{}'s store balance is ${}.".format(my_shop.shop_name, my_shop.store_balance)
+    print "{}'s store profit is ${}.\n".format(my_shop.shop_name, my_shop.profit)
 
-customers = [
-    Customer("Cyclops", 200),
-    Customer("Gambit", 500),
-    Customer("Wolverine", 1000)
-]
+    customers = [
+        Customer("Cyclops", 200),
+        Customer("Gambit", 500),
+        Customer("Wolverine", 1000)
+    ]
 
-for customer in customers:
-    print "{} has a budget of ${}.".format(customer.name,customer.budget)
-    print "{} can afford the following bicycles:".format(customer.name, my_shop.shop_name)
-    for bicycle_model, bicycle in my_shop.bicycle_inventory.iteritems():
-        if customer.budget >= bicycle[0].price:
-            print "* {}".format(bicycle[0].model)
+    for customer in customers:
+        print "{} has a budget of ${}.".format(customer.name,customer.budget)
+        print "{} can afford the following bicycles:".format(customer.name, my_shop.shop_name)
+        for bicycle_model, bicycle in my_shop.bicycle_inventory.iteritems():
+            if customer.budget >= bicycle[0].price:
+                print "* {}".format(bicycle[0].model)
+        print
+
+    my_shop.show_inventory()
+    # Q: More elegant way to pass individual customers to sell() method?
+    my_shop.sell("Green", customers[0])
+    my_shop.sell("Red", customers[1])
+    my_shop.sell("Black", customers[2])
     print
+    my_shop.show_inventory()
+    print "\n{}'s profit is now ${}.".format(my_shop.shop_name, my_shop.profit)
 
-my_shop.show_inventory()
-# Q: More elegant way to pass individual customers to sell() method?
-my_shop.sell("Green", customers[0])
-my_shop.sell("Red", customers[1])
-my_shop.sell("Black", customers[2])
-print
-my_shop.show_inventory()
-print "\n{}'s profit is now ${}.".format(my_shop.shop_name, my_shop.profit)
+if __name__ == '__main__':
+    main()
