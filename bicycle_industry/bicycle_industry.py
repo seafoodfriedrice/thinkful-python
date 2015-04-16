@@ -25,7 +25,7 @@ class BicycleShop(object):
         """
         # Using dictionary setdefault to do the same as above
         self.bicycle_inventory.setdefault(bicycle.model, []).append(bicycle)
-        self.store_balance = self.store_balance - bicycle.production_cost
+        self.store_balance -= bicycle.production_cost
 
     def sell(self, bicycle_model, customer):
         if bicycle_model in self.bicycle_inventory:
@@ -35,9 +35,9 @@ class BicycleShop(object):
                 bicycle_price = self.bicycle_inventory[bicycle_model][0].price
                 bicycle_production_cost = self.bicycle_inventory[bicycle_model][0].production_cost
                 if customer.budget >= bicycle_price:
-                    self.profit = self.profit + (bicycle_price - bicycle_production_cost)
+                    self.profit += bicycle_price - bicycle_production_cost
                     self.bicycle_inventory[bicycle_model].pop()
-                    self.store_balance = self.store_balance + bicycle_price
+                    self.store_balance += bicycle_price
                     customer.budget = customer.budget - bicycle_price
                     print "\nSold {} bicycle to {} for ${}.".format(
                         bicycle_model, customer.name, bicycle_price)
