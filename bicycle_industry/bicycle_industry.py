@@ -50,10 +50,10 @@ class BicycleShop(object):
     def show_inventory(self):
         print "{} bicycle inventory:".format(self.shop_name)
         for bicycle_model, bicycle in self.bicycle_inventory.iteritems():
+            # Does not display out of stack bicycles and their prices
             if len(self.bicycle_inventory[bicycle_model]) > 0:
                 print "> ({}) {} ${}".format(len(bicycle), bicycle_model,
                                              bicycle[0].price)
-            # Does not display out of stack bicycles and their prices
 
     """def display_profit(self):"""
 
