@@ -17,9 +17,7 @@ class BicycleShop(object):
     def add_bicycle(self, bicycle):
         if bicycle.model not in self.bicycle_inventory:
             self.bicycle_inventory[bicycle.model] = []
-            self.bicycle_inventory[bicycle.model].append(bicycle)
-        else:
-            self.bicycle_inventory[bicycle.model].append(bicycle)
+        self.bicycle_inventory[bicycle.model].append(bicycle)
         self.store_balance = self.store_balance - bicycle.production_cost
 
     def sell(self, bicycle_model, customer):
