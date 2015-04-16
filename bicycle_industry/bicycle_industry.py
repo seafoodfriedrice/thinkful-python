@@ -70,11 +70,13 @@ my_shop.add_bicycle(Bicycle("Black", 100, 750))
 
 print "{}'s store balance is ${}.\n".format(my_shop.shop_name, my_shop.store_balance)
 
-customer_one = Customer("Cyclops", 200)
-customer_two = Customer("Gambit", 500)
-customer_three = Customer("Wolverine", 1000)
+customers = [
+    Customer("Cyclops", 200),
+    Customer("Gambit", 500),
+    Customer("Wolverine", 1000)
+]
 
-for customer in [customer_one, customer_two, customer_three]:
+for customer in customers:
     print "{} has a budget of ${}.".format(customer.name,customer.budget)
     print "{} can afford the following bicycles:".format(customer.name, my_shop.shop_name)
     for bicycle_model, bicycle in my_shop.bicycle_inventory.iteritems():
@@ -83,7 +85,9 @@ for customer in [customer_one, customer_two, customer_three]:
     print
 
 my_shop.show_inventory()
-my_shop.sell("Green", customer_one)
-my_shop.sell("Red", customer_two)
-my_shop.sell("Black", customer_three)
+# More elegant way to pass individual customers to sell() method?
+my_shop.sell("Green", customers[0])
+my_shop.sell("Red", customers[1])
+my_shop.sell("Black", customers[2])
+print
 my_shop.show_inventory()
