@@ -24,6 +24,11 @@ class BicycleShop(object):
         self.bicycle_inventory[bicycle.model].append(bicycle)
         """
         # Using dictionary setdefault to do the same as above
+        """
+        self.bicycle_inventory.setdefault(bicycle.model, [])
+        self.bicycle_inventory[bicycle.model].append(bicycle)
+        """
+        # Even shorter
         self.bicycle_inventory.setdefault(bicycle.model, []).append(bicycle)
         self.store_balance -= bicycle.production_cost
 
