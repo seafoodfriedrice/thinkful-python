@@ -4,7 +4,7 @@ class Bicycle(object):
         self.weight = weight
         self.production_cost = production_cost
         self.margin_percent = 20
-        # Need to correctly display two decimal points on price
+        # Q: What is simplest way to ensure there are two decimal places?
         self.price = self.production_cost + (self.production_cost *
                           (float(self.margin_percent) / 100))
 
@@ -13,6 +13,8 @@ class BicycleShop(object):
         self.shop_name = shop_name
         self.bicycle_inventory = {}
         self.store_balance = 1000
+        # Q: Better to track profit here or in main()?
+        self.profit = 0
 
     def add_bicycle(self, bicycle):
         if bicycle.model not in self.bicycle_inventory:
@@ -23,8 +25,12 @@ class BicycleShop(object):
     def sell(self, bicycle_model, customer):
         if bicycle_model in self.bicycle_inventory:
             if len(self.bicycle_inventory[bicycle_model]) > 0:
+                # Q: Next two lines seem unnecessarily long, is there
+                #    a cleaner way?
                 bicycle_price = self.bicycle_inventory[bicycle_model][0].price
+                bicycle_production_cost = self.bicycle_inventory[bicycle_model][0].production_cost
                 if customer.budget >= bicycle_price:
+                    self.profit = self.profit + (bicycle_price - bicycle_production_cost)
                     self.bicycle_inventory[bicycle_model].pop()
                     self.store_balance = self.store_balance + bicycle_price
                     customer.budget = customer.budget - bicycle_price
@@ -68,7 +74,8 @@ my_shop.add_bicycle(Bicycle("Silver", 125, 300))
 my_shop.add_bicycle(Bicycle("Gold", 125, 500))
 my_shop.add_bicycle(Bicycle("Black", 100, 750))
 
-print "{}'s store balance is ${}.\n".format(my_shop.shop_name, my_shop.store_balance)
+print "{}'s store balance is ${}.".format(my_shop.shop_name, my_shop.store_balance)
+print "{}'s store profit is ${}.\n".format(my_shop.shop_name, my_shop.profit)
 
 customers = [
     Customer("Cyclops", 200),
@@ -85,9 +92,10 @@ for customer in customers:
     print
 
 my_shop.show_inventory()
-# More elegant way to pass individual customers to sell() method?
+# Q: More elegant way to pass individual customers to sell() method?
 my_shop.sell("Green", customers[0])
 my_shop.sell("Red", customers[1])
 my_shop.sell("Black", customers[2])
 print
 my_shop.show_inventory()
+print "\n{}'s profit is now ${}.".format(my_shop.shop_name, my_shop.profit)
