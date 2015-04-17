@@ -34,18 +34,15 @@ class BicycleShop(object):
 
     def sell(self, bicycle_model, customer):
         if bicycle_model in self.bicycle_inventory:
-            if len(self.bicycle_inventory[bicycle_model]) > 0:
-                # Q: Next two lines seem unnecessarily long, is there
-                #    a cleaner way?
-                bicycle_price = self.bicycle_inventory[bicycle_model][0].price
-                bicycle_production_cost = self.bicycle_inventory[bicycle_model][0].production_cost
-                if customer.budget >= bicycle_price:
-                    self.profit += bicycle_price - bicycle_production_cost
+            if self.bicycle_inventory[bicycle_model]:
+                bicycle = self.bicycle_inventory[bicycle_model][0]
+                if customer.budget >= bicycle.price:
+                    self.profit += bicycle.price - bicycle.production_cost
                     self.bicycle_inventory[bicycle_model].pop()
-                    self.store_balance += bicycle_price
-                    customer.budget = customer.budget - bicycle_price
+                    self.store_balance += bicycle.price
+                    customer.budget = customer.budget - bicycle.price
                     print "\nSold {} bicycle to {} for ${}.".format(
-                        bicycle_model, customer.name, bicycle_price)
+                        bicycle.model, customer.name, bicycle.price)
                     print "{} has ${} left.".format(
                         customer.name, customer.budget)
                 else:
