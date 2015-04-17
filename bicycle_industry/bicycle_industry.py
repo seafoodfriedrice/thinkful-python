@@ -104,10 +104,9 @@ def main():
         print
 
     my_shop.show_inventory()
-    # Q: More elegant way to pass individual customers to sell() method?
-    my_shop.sell("Green", customers[0])
-    my_shop.sell("Red", customers[1])
-    my_shop.sell("Black", customers[2])
+    colors = ['Green', 'Red', 'Black']
+    for color, customer in zip(colors, customers):
+        my_shop.sell(color, customer)
     print
     my_shop.show_inventory()
     print "\n{}'s profit is now ${}.".format(my_shop.shop_name, my_shop.profit)
