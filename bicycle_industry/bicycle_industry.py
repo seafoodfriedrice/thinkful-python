@@ -64,15 +64,12 @@ class BicycleShop(object):
                 print "> ({}) {} ${}".format(len(bicycle), bicycle_model,
                                              bicycle[0].price)
 
-    """def display_profit(self):"""
-
-
 class Customer(object):
     def __init__(self, name, budget):
         self.name = name
         self.budget = budget
         self.bicycles_owned = []
-    """def purchase_bicycle(self, bicycle_shop, bicycle_model):"""
+
 
 def main():
     my_shop = BicycleShop("Pedal Files")
