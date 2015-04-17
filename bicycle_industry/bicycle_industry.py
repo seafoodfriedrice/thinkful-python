@@ -1,3 +1,5 @@
+from collections import defaultdict
+
 class Bicycle(object):
     def __init__(self, model, weight, production_cost):
         self.model = model
@@ -12,24 +14,13 @@ class Bicycle(object):
 class BicycleShop(object):
     def __init__(self, shop_name):
         self.shop_name = shop_name
-        self.bicycle_inventory = {}
+        self.bicycle_inventory = defaultdict(list)
         self.store_balance = 1000
         # Q: Better to track profit here or in main()?
         self.profit = 0
 
     def add_bicycle(self, bicycle):
-        """
-        if bicycle.model not in self.bicycle_inventory:
-            self.bicycle_inventor[bicycle.model] = []
         self.bicycle_inventory[bicycle.model].append(bicycle)
-        """
-        # Using dictionary setdefault to do the same as above
-        """
-        self.bicycle_inventory.setdefault(bicycle.model, [])
-        self.bicycle_inventory[bicycle.model].append(bicycle)
-        """
-        # Even shorter
-        self.bicycle_inventory.setdefault(bicycle.model, []).append(bicycle)
         self.store_balance -= bicycle.production_cost
 
     def sell(self, bicycle_model, customer):
