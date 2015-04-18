@@ -1,3 +1,5 @@
+from collections import defaultdict
+
 class Bicycle(object):
     def __init__(self, model, weight, production_cost):
         self.model = model
@@ -7,6 +9,22 @@ class Bicycle(object):
         # Q: What is simplest way to ensure there are two decimal places?
         self.price = self.production_cost + (self.production_cost *
                           (float(self.margin_percent) / 100))
+
+
+class Wheel(object):
+    def __init__(self, model, wheel_type, weight, production_cost):
+        self.model = model
+        self.wheel_type = wheel_type
+        self.weight = weight
+        self.production_cost = production_cost
+
+
+class Frame(object):
+    frame_types = ['aluminum', 'carbon', 'steel']
+    def __init__(self, frame_type, weight, production_cost):
+        self.frame_type = frame_type
+        self.weight = self.frame_types[frame_type]
+        self.production_cost = production_cost
 
 
 class BicycleShop(object):
