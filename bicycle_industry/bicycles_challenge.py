@@ -11,12 +11,35 @@ class Bicycle(object):
                           (float(self.margin_percent) / 100))
 
 
+class Wheel(object):
+    def __init__(self, model):
+        wheels = {
+            'cart': { 'weight': 10, 'production_cost': 20 },
+            'ferris': { 'weight': 15, 'production_cost': 40 },
+            'steering': { 'weight': 25, 'production_cost': 60 }
+        }
+        self.model = model
+        self.weight = wheels[model]['weight']
+        self.production_cost = wheels[model]['production_cost']
+
+
+class Frame(object):
+    def __init__(self, frame_type):
+        frames = {
+            'aluminum': { 'weight': 20, 'production_cost': 150 },
+            'carbon': { 'weight': 30, 'production_cost': 100 },
+            'steel': { 'weight': 40, 'production_cost': 75 }
+        }
+        self.frame_type = frame_type
+        self.weight = frames[frame_type]['weight']
+        self.production_cost = frames[frame_type]['production_cost']
+
+
 class BicycleShop(object):
     def __init__(self, shop_name):
         self.shop_name = shop_name
         self.bicycle_inventory = defaultdict(list)
         self.store_balance = 1000
-        # Q: Better to track profit here or in main()?
         self.profit = 0
 
     def add_bicycle(self, bicycle):

@@ -1,4 +1,3 @@
-from collections import defaultdict
 from bicycles import *
 
 def main():
@@ -39,4 +38,8 @@ def main():
     print "\n{}'s profit is now ${}.".format(my_shop.shop_name, my_shop.profit)
 
 if __name__ == '__main__':
-    main()
+    f = Frame('carbon')
+    w = Wheel('cart')
+    print "Weight: {}, Production Cost: {}".format(f.weight, f.production_cost)
+    print "Weight: {}, Production Cost: {}".format(w.weight, w.production_cost)
+    #main()
