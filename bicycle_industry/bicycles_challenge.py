@@ -64,7 +64,7 @@ class BicycleShop(object):
                     self.profit += bicycle.price - bicycle.total_production_cost
                     self.bicycle_inventory[bicycle_model].pop()
                     self.store_balance += bicycle.price
-                    customer.budget = customer.budget - bicycle.price
+                    customer.budget -= bicycle.price
                     print "\nSold {} bicycle to {} for ${}.".format(
                         bicycle.model, customer.name, bicycle.price)
                     print "{} has ${} left.".format(
