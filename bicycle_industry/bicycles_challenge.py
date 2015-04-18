@@ -1,5 +1,22 @@
 from collections import defaultdict
 
+class BicycleManufacturer(object):
+    def __init__(self, manufacturer_name, models):
+        self.manufacturer_name = manufacturer_name
+        self.models = models
+        self.margin_percent = 5
+
+    def order(self, model_name):
+        if model_name in self.models:
+            bicycle = Bicycle(model_name)
+            bicycle.price += (bicycle.price * float(self.margin_percent) / 100)
+            print "Sold {} for {}.".format(bicycle.model, bicycle.price)
+            return bicycle
+        else:
+            print "{} does not carry the {} model bicycle.".format(
+                   self.manufacturer_name, model_name)
+        
+         
 class Bicycle(object):
     def __init__(self, model):
         models = {
@@ -13,12 +30,8 @@ class Bicycle(object):
         self.model = model
         self.wheel = models[model]['wheel']
         self.frame = models[model]['frame']
-        self.margin_percent = 20
-        self.total_production_cost = ((self.wheel.production_cost * 2) + 
+        self.price = ((self.wheel.production_cost * 2) + 
                                       self.frame.production_cost)
-        # Q: What is simplest way to ensure there are two decimal places?
-        self.price = (self.total_production_cost + (self.total_production_cost *
-                      (float(self.margin_percent) / 100)))
 
 
 class Wheel(object):
@@ -51,22 +64,32 @@ class BicycleShop(object):
         self.bicycle_inventory = defaultdict(list)
         self.store_balance = 1000
         self.profit = 0
+        self.margin_percent = 20
 
+
+    def sell_price(self, bicycle_model):
+        bicycle = self.bicycle_inventory[bicycle_model][0]
+        # Does not display out of stock bicycles and their prices
+        sell_price = bicycle.price + (bicycle.price * (
+                    float(self.margin_percent) / 100))
+        return sell_price
+        
     def add_bicycle(self, bicycle):
         self.bicycle_inventory[bicycle.model].append(bicycle)
-        self.store_balance -= bicycle.total_production_cost
+        self.store_balance -= bicycle.price
 
     def sell(self, bicycle_model, customer):
         if bicycle_model in self.bicycle_inventory:
             if self.bicycle_inventory[bicycle_model]:
                 bicycle = self.bicycle_inventory[bicycle_model][0]
-                if customer.budget >= bicycle.price:
-                    self.profit += bicycle.price - bicycle.total_production_cost
+                sell_price = self.sell_price(bicycle_model)
+                if customer.budget >= sell_price:
+                    self.profit += sell_price - bicycle.price
                     self.bicycle_inventory[bicycle_model].pop()
-                    self.store_balance += bicycle.price
-                    customer.budget -= bicycle.price
+                    self.store_balance += sell_price
+                    customer.budget -= sell_price
                     print "\nSold {} bicycle to {} for ${}.".format(
-                        bicycle.model, customer.name, bicycle.price)
+                        bicycle.model, customer.name, sell_price)
                     print "{} has ${} left.".format(
                         customer.name, customer.budget)
                 else:
@@ -80,10 +103,9 @@ class BicycleShop(object):
     def show_inventory(self):
         print "{} bicycle inventory:".format(self.shop_name)
         for bicycle_model, bicycle in self.bicycle_inventory.iteritems():
-            # Does not display out of stack bicycles and their prices
             if self.bicycle_inventory[bicycle_model]:
                 print "> ({}) {} ${}".format(len(bicycle), bicycle_model,
-                                             bicycle[0].price)
+                                             self.sell_price(bicycle_model))
 
 class Customer(object):
     def __init__(self, name, budget):
