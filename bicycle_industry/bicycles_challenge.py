@@ -1,14 +1,24 @@
 from collections import defaultdict
 
 class Bicycle(object):
-    def __init__(self, model, weight, production_cost):
+    def __init__(self, model):
+        models = {
+            'Zeus': { 'wheel': Wheel('cart'), 'frame': Frame('aluminum') },
+            'Athena': { 'wheel': Wheel('ferris'), 'frame': Frame('aluminum') },
+            'Ares': { 'wheel': Wheel('ferris'), 'frame': Frame('carbon') },
+            'Poseidon': { 'wheel': Wheel('steering'), 'frame': Frame('carbon') },
+            'Hermes': { 'wheel': Wheel('steering'), 'frame': Frame('steel') },
+            'Hera': { 'wheel': Wheel('cart'), 'frame': Frame('steel') }
+        }
         self.model = model
-        self.weight = weight
-        self.production_cost = production_cost
+        self.wheel = models[model]['wheel']
+        self.frame = models[model]['frame']
         self.margin_percent = 20
+        self.total_production_cost = ((self.wheel.production_cost * 2) + 
+                                      self.frame.production_cost)
         # Q: What is simplest way to ensure there are two decimal places?
-        self.price = self.production_cost + (self.production_cost *
-                          (float(self.margin_percent) / 100))
+        self.price = (self.total_production_cost + (self.total_production_cost *
+                      (float(self.margin_percent) / 100)))
 
 
 class Wheel(object):
@@ -44,14 +54,14 @@ class BicycleShop(object):
 
     def add_bicycle(self, bicycle):
         self.bicycle_inventory[bicycle.model].append(bicycle)
-        self.store_balance -= bicycle.production_cost
+        self.store_balance -= bicycle.total_production_cost
 
     def sell(self, bicycle_model, customer):
         if bicycle_model in self.bicycle_inventory:
             if self.bicycle_inventory[bicycle_model]:
                 bicycle = self.bicycle_inventory[bicycle_model][0]
                 if customer.budget >= bicycle.price:
-                    self.profit += bicycle.price - bicycle.production_cost
+                    self.profit += bicycle.price - bicycle.total_production_cost
                     self.bicycle_inventory[bicycle_model].pop()
                     self.store_balance += bicycle.price
                     customer.budget = customer.budget - bicycle.price
