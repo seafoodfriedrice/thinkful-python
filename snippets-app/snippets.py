@@ -17,23 +17,25 @@ connection = psycopg2.connect(**connect_args)
 logging.debug("Database connection established.")
 
 def put(name, snippet):
-    """
-    Store a snippet with an associated name.
-
-    Returns the name and the snippet.
-    """
-    logging.error("FIXME: Unimplemented - put({!r}, {!r})".format(name, snippet))
+    """Store a snippet with an associated name."""
+    logging.info("Storing snippet {!r}: {!r}".format(name, snippet))
+    cursor = connection.cursor()
+    command = "insert into snippets values (%s, %s)"
+    cursor.execute(command, (name, snippet))
+    connection.commit()
+    logging.debug("Snippet stored successfully.")
     return name, snippet
 
 def get(name):
-    """Retrieve the snippet with a given name.
-
-    If there is no such snippet...
-
-    Returns the snippet.
-    """
-    logging.error("FIXME: Unimplemented - get({!r})".format(name))
-    return ""
+    """Retrieve the snippet with a given keyword."""
+    logging.info("Retrieving snippet {!r}".format(name))
+    cursor = connection.cursor()
+    command = "select keyword, message from snippets where keyword=%s"
+    # Q: Am I suppose to be passing name as a tuple using this syntax?
+    cursor.execute(command, (name,))
+    connection.commit()
+    logging.debug("Retrieved snippet successfully.")
+    return cursor.fetchone()
 
 def main():
     """Main function"""
@@ -60,10 +62,10 @@ def main():
 
     if command == "put":
         name, snipper = put(**arguments)
-        print ("Store {!r} as {!r}".format(snipper,name))
+        print ("Store {!r} as {!r}".format(snipper, name))
     elif command == "get":
-        snippet = get(**arguments)
-        print("Retrieved snipper: {!r}".format(snippet))
+        snipper = get(**arguments)
+        print ("Retrieved snipper: {!r}".format(snipper))
 
 if __name__ == '__main__':
     main()
