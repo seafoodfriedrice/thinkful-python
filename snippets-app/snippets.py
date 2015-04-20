@@ -33,9 +33,13 @@ def get(name):
     command = "select keyword, message from snippets where keyword=%s"
     # Q: Am I suppose to be passing name as a tuple using this syntax?
     cursor.execute(command, (name,))
+    row = cursor.fetchone()
     connection.commit()
-    logging.debug("Retrieved snippet successfully.")
-    return cursor.fetchone()
+    if not row:
+        logging.debug("Failed to retrieve snippet.")
+    else:
+        logging.debug("Retrieved snippet successfully.")
+        return row[0]
 
 def main():
     """Main function"""
