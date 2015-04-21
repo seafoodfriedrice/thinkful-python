@@ -1,16 +1,16 @@
 from collections import defaultdict
 
 class BicycleManufacturer(object):
-    def __init__(self, manufacturer_name, models):
+    def __init__(self, manufacturer_name, models, margin_percent=5):
         self.manufacturer_name = manufacturer_name
         self.models = models
-        self.margin_percent = 5
+        self.margin_percent = margin_percent
 
     def order(self, model_name):
         if model_name in self.models:
             bicycle = Bicycle(model_name)
-            bicycle.price += (bicycle.price * float(self.margin_percent) / 100)
-            print "Sold {} for {}.".format(bicycle.model, bicycle.price)
+            bicycle.price += (bicycle.price * self.margin_percent / 100.0)
+            print "Sold {} for {:.2f}.".format(bicycle.model, bicycle.price)
             return bicycle
         else:
             print "{} does not carry the {} model bicycle.".format(
