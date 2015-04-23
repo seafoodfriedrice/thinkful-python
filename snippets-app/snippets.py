@@ -36,12 +36,18 @@ def get(name):
         cursor.execute("select message from snippets where "
                        "keyword=%s", (name,))
         row = cursor.fetchone()
-    connection.commit()
     if not row:
         logging.debug("Failed to retrieve snippet.")
     else:
         logging.debug("Retrieved snippet successfully.")
         return row
+
+def catalog():
+    """Show available keywords to access snippets."""
+    logging.info("Retrieving all keywords.")
+    with connection, connection.cursor() as cursor:
+        cursor.execute("select keyword from snippets order by keyword")
+        return cursor.fetchall()
 
 def main():
     """Main function"""
@@ -61,6 +67,11 @@ def main():
     get_parser = subparsers.add_parser("get", help="Retrieve a snipper")
     get_parser.add_argument("name", help="The name of the snippet")
 
+    # Subparser for catalog()
+    logging.debug("Constructing catalog subparser")
+    catalog_parser = subparsers.add_parser("catalog",
+                                           help="Display available keywords")
+
     arguments = parser.parse_args(sys.argv[1:])
     # Convert parsed arguments from Namespace to dictionary
     arguments = vars(arguments)
@@ -72,6 +83,9 @@ def main():
     elif command == "get":
         snipper = get(**arguments)
         print ("Retrieved snipper: {!r}".format(snipper))
+    elif command == "catalog":
+        keywords = catalog(**arguments)
+        print ("Available snippet keywords: {!r}".format(keywords))
 
 if __name__ == '__main__':
     main()
