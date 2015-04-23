@@ -49,6 +49,16 @@ def catalog():
         cursor.execute("select keyword from snippets order by keyword")
         return cursor.fetchall()
 
+def search(string):
+    """Search for string in snippets and return keyword and message."""
+    logging.info("Searching for {} in database.".format(string))
+    with connection, connection.cursor() as cursor:
+        # Prepend and append % to string to use 'like' SQL statement
+        string = "%{}%".format(string)
+        cursor.execute("select * from snippets where message like %s",
+                        (string,))
+        return cursor.fetchall()
+
 def main():
     """Main function"""
     logging.info("Constructing parser")
@@ -72,6 +82,12 @@ def main():
     catalog_parser = subparsers.add_parser("catalog",
                                            help="Display available keywords")
 
+    # Subparser for search()
+    logging.debug("Constructing search subparser")
+    search_parser = subparsers.add_parser("search",
+                                          help="Search for specific string")
+    search_parser.add_argument("string", help="String to search in messages")
+
     arguments = parser.parse_args(sys.argv[1:])
     # Convert parsed arguments from Namespace to dictionary
     arguments = vars(arguments)
@@ -86,6 +102,11 @@ def main():
     elif command == "catalog":
         keywords = catalog(**arguments)
         print ("Available snippet keywords: {!r}".format(keywords))
+    elif command == "search":
+        results = search(**arguments)
+        print "Search found the following:\n"
+        for result in results:
+            print "{}: {}".format(result[0], result[1])
 
 if __name__ == '__main__':
     main()
