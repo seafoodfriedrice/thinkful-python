@@ -20,8 +20,13 @@ def put(name, snippet):
     """Store a snippet with an associated name."""
     logging.info("Storing snippet {!r}: {!r}".format(name, snippet))
     cursor = connection.cursor()
-    command = "insert into snippets values (%s, %s)"
-    cursor.execute(command, (name, snippet))
+    try:
+        command = "insert into snippets values (%s, %s)"
+        cursor.execute(command, (name, snippet))
+    except psycopg2.IntegrityError as e:
+        connection.rollback()
+        command = "update snippets set message=%s where keyword=%s"
+        cursor.execute(command, (snippet, name))
     connection.commit()
     logging.debug("Snippet stored successfully.")
     return name, snippet
@@ -31,7 +36,6 @@ def get(name):
     logging.info("Retrieving snippet {!r}".format(name))
     cursor = connection.cursor()
     command = "select keyword, message from snippets where keyword=%s"
-    # Q: Am I suppose to be passing name as a tuple using this syntax?
     cursor.execute(command, (name,))
     row = cursor.fetchone()
     connection.commit()
@@ -39,7 +43,7 @@ def get(name):
         logging.debug("Failed to retrieve snippet.")
     else:
         logging.debug("Retrieved snippet successfully.")
-        return row[0]
+        return row
 
 def main():
     """Main function"""
