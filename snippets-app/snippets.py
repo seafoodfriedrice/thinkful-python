@@ -18,7 +18,6 @@ logging.debug("Database connection established.")
 
 def put(name, snippet, hide):
     """Store a snippet with an associated name."""
-    print name, snippet, hide
     logging.info("Storing snippet {!r}: {!r}".format(name, snippet))
     with connection, connection.cursor() as cursor:
         try:
@@ -26,7 +25,6 @@ def put(name, snippet, hide):
             cursor.execute(command, (name, snippet, hide))
         except psycopg2.IntegrityError as e:
             command = "update snippets set message=%s, hidden=%s where keyword=%s"
-            print command % (snippet, hide, name)
             cursor.execute(command, (snippet, hide, name))
     logging.debug("Snippet stored successfully.")
     return name, snippet, hide
