@@ -16,18 +16,20 @@ connect_args = {
 connection = psycopg2.connect(**connect_args)
 logging.debug("Database connection established.")
 
-def put(name, snippet):
+def put(name, snippet, hide):
     """Store a snippet with an associated name."""
+    print name, snippet, hide
     logging.info("Storing snippet {!r}: {!r}".format(name, snippet))
     with connection, connection.cursor() as cursor:
         try:
-            command = "insert into snippets values (%s, %s)"
-            cursor.execute(command, (name, snippet))
+            command = "insert into snippets values (%s, %s, %s)"
+            cursor.execute(command, (name, snippet, hide))
         except psycopg2.IntegrityError as e:
-            command = "update snippets set message=%s where keyword=%s"
-            cursor.execute(command, (snippet, name))
+            command = "update snippets set message=%s, hidden=%s where keyword=%s"
+            print command % (snippet, hide, name)
+            cursor.execute(command, (snippet, hide, name))
     logging.debug("Snippet stored successfully.")
-    return name, snippet
+    return name, snippet, hide
 
 def get(name):
     """Retrieve the snippet with a given keyword."""
@@ -62,15 +64,19 @@ def search(string):
 def main():
     """Main function"""
     logging.info("Constructing parser")
-    parser = argparse.ArgumentParser(description="Store and retrieve snippets of text")
-
-    subparsers = parser.add_subparsers(dest="command", help="Available commands")
+    parser = argparse.ArgumentParser(
+                      description="Store and retrieve snippets of text")
+    subparsers = parser.add_subparsers(dest="command",
+                                       help="Available commands")
     
     # Subparser for the put command
     logging.debug("Constructing put subparser")
     put_parser = subparsers.add_parser("put", help="Store a snippet")
     put_parser.add_argument("name", help="The name of the snippet")
     put_parser.add_argument("snippet", help="The snippet text")
+    put_parser.add_argument("--hide",
+                            help="Store snippet as hidden",
+                            action='store_true')
 
     # Subparser for the get command
     logging.debug("Constructing get subparser")
@@ -94,8 +100,8 @@ def main():
     command = arguments.pop("command")
 
     if command == "put":
-        name, snipper = put(**arguments)
-        print ("Store {!r} as {!r}".format(snipper, name))
+        name, snippet, hide = put(**arguments)
+        print ("Store {!r} as {!r} {}.".format(snippet, name, hide))
     elif command == "get":
         snipper = get(**arguments)
         print ("Retrieved snipper: {!r}".format(snipper))
