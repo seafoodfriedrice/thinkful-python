@@ -25,8 +25,12 @@ def put(name, snippet, hide):
             cursor.execute(command, (name, snippet, hide))
         except psycopg2.IntegrityError as e:
             connection.rollback()
-            command = "update snippets set message=%s, hidden=%s where keyword=%s"
-            cursor.execute(command, (snippet, hide, name))
+            if not hide:
+                command = "update snippets set message=%s where keyword=%s"
+                cursor.execute(command, (snippet, name))
+            else:
+                command = "update snippets set message=%s, hidden=%s where keyword=%s"
+                cursor.execute(command, (snippet, hide, name))
     logging.debug("Snippet stored successfully.")
     return name, snippet, hide
 
@@ -76,6 +80,11 @@ def main():
     put_parser.add_argument("--hide",
                             help="Store snippet as hidden",
                             action='store_true')
+    # Q: How to handle additional optional argument?
+    #    This needs to be updated on Line 111 and elsewhere, etc.
+    #put_parser.add_argument("--show",
+    #                        help="Snippet will be be shown by default",
+    #                        action='store_false')
 
     # Subparser for the get command
     logging.debug("Constructing get subparser")
@@ -102,8 +111,8 @@ def main():
         name, snippet, hide = put(**arguments)
         print ("Store {!r} as {!r} {}.".format(snippet, name, hide))
     elif command == "get":
-        snipper = get(**arguments)
-        print ("Retrieved snipper: {!r}".format(snipper))
+        snippet = get(**arguments)
+        print ("Retrieved snipper: {!r}".format(snippet))
     elif command == "catalog":
         keywords = catalog(**arguments)
         print ("Available snippet keywords: {!r}".format(keywords))
