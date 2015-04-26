@@ -2,7 +2,6 @@
 
 ```
 (env) tbay $ dropdb tbay -U postgres
-(env) tbay $ createdb tbay
 (env) tbay $ createdb tbay -U postgres
 (env) tbay $ python tbay.py
 ```
