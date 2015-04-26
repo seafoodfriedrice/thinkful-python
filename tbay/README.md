@@ -21,6 +21,12 @@ Type "help", "copyright", "credits" or "license" for more information.
 >>> session.add_all([alice, bob, eve, baseball, bid_bob, bid_eve])
 >>> session.commit()
 >>> 
+>>> session.query(Bid).order_by(Bid.price.desc()).first().price
+11.0
+>>> session.query(Bid).order_by(Bid.price.desc()).first().user_id
+3
+>>> session.query(User).filter(User.id == 3).first().username
+u'eve'
 ```
 
 ```
