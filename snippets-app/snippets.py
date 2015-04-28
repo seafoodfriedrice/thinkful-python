@@ -16,7 +16,7 @@ connect_args = {
 connection = psycopg2.connect(**connect_args)
 logging.debug("Database connection established.")
 
-def put(name, snippet, hide):
+def put(name, snippet, hide=None):
     """Store a snippet with an associated name."""
     logging.info("Storing snippet {!r}: {!r}".format(name, snippet))
     with connection, connection.cursor() as cursor:
@@ -25,12 +25,12 @@ def put(name, snippet, hide):
             cursor.execute(command, (name, snippet, hide))
         except psycopg2.IntegrityError as e:
             connection.rollback()
-            if not hide:
-                command = "update snippets set message=%s where keyword=%s"
-                cursor.execute(command, (snippet, name))
-            else:
+            if hide is not None:
                 command = "update snippets set message=%s, hidden=%s where keyword=%s"
                 cursor.execute(command, (snippet, hide, name))
+            else:
+                command = "update snippets set message=%s where keyword=%s"
+                cursor.execute(command, (snippet, name))
     logging.debug("Snippet stored successfully.")
     return name, snippet, hide
 
@@ -79,12 +79,13 @@ def main():
     put_parser.add_argument("snippet", help="The snippet text")
     put_parser.add_argument("--hide",
                             help="Store snippet as hidden",
-                            action='store_true')
+                            action='store_true',
+                            default=None)
     # Q: How to handle additional optional argument?
     #    This needs to be updated on Line 111 and elsewhere, etc.
-    #put_parser.add_argument("--show",
-    #                        help="Snippet will be be shown by default",
-    #                        action='store_false')
+    put_parser.add_argument("--show",
+                            help="Snippet will be be shown by default",
+                            action='store_false')
 
     # Subparser for the get command
     logging.debug("Constructing get subparser")
@@ -105,10 +106,13 @@ def main():
     arguments = parser.parse_args(sys.argv[1:])
     # Convert parsed arguments from Namespace to dictionary
     arguments = vars(arguments)
+    print arguments
     command = arguments.pop("command")
 
     if command == "put":
-        name, snippet, hide = put(**arguments)
+        if arguments['show']:
+            arguments['hide'] = False
+        name, snippet, hide = put(arguments['name'], arguments['snippet'], arguments['hide'])
         print ("Store {!r} as {!r} {}.".format(snippet, name, hide))
     elif command == "get":
         snippet = get(**arguments)
