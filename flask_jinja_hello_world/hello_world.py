@@ -1,32 +1,21 @@
-from flask import Flask
+from flask import Flask, render_template
 
 app = Flask(__name__)
 
 @app.route("/hello")
 def say_hi():
-    return "Hello World"
+    return render_template('hello.html', title='Hello World Page')
 
 @app.route("/hello/<name>")
 def hello_person(name):
-    html = """
-        <h1>
-            Hello {}!
-        </h1>
-        <p>
-            Here's a picture of a kitten. Awww...
-        </p>
-        <img src="http://placekitten.com/g/200/300">
-    """
-    return html.format(name.title())
+    return render_template('hello_person.html', title='Hello {}'.format(name),
+                           name=name.title())
 
 @app.route("/jedi/<first>/<last>")
 def make_jedi_name(first, last):
     jedi_name = last[0:3] + "'" + first[0:2]
-    html = """
-        <p>Your Jedi name is:</p>
-        <h1>{}</h1>
-    """
-    return html.format(jedi_name.title())
+    return render_template('jedi.html', title='Jedi Name',
+                           jedi_name=jedi_name.title())
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8080)
