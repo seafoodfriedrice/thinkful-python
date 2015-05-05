@@ -1,0 +1,9 @@
+{% import "macros.html" as macros %}
+{% extends "base.html" %}
+{% block content %}
+{% if post %}
+{{ macros.render_post(post) }}
+{% else %}
+<div class="alert alert-warning" role="alert">Sorry, that post doesn't exist.</div>
+{% endif %}
+{% endblock %}
