@@ -6,6 +6,8 @@ from blog import app
 from .database import session
 from .models import Post
 
+from sqlalchemy import update
+
 @app.route("/")
 @app.route("/page/<int:page>")
 def posts(page=1, paginate_by=10):
@@ -37,6 +39,20 @@ def posts(page=1, paginate_by=10):
 def post(post_id):
     post = session.query(Post).filter(Post.id == post_id).first()
     return render_template("post.html", post=post)
+
+@app.route("/post/<int:post_id>/edit", methods=["GET"])
+def edit_post_get(post_id):
+    post = session.query(Post).filter(Post.id == post_id).first()
+    return render_template("edit_post.html", post=post)
+
+@app.route("/post/<int:post_id>/edit", methods=["POST"])
+def edit_post_post(post_id):
+    post = session.query(Post).filter(Post.id == post_id).first()
+    post.title = request.form["title"]
+    post.content = request.form["content"]
+    session.add(post)
+    session.commit()
+    return redirect(url_for("post", post_id=post_id))
 
 @app.route("/post/add", methods=["GET"])
 def add_post_get():
