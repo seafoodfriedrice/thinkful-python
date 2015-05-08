@@ -7,6 +7,26 @@ from .database import session
 from .models import Post
 
 from sqlalchemy import update
+from flask import flash
+from flask.ext.login import login_user
+from flask.ext.login import login_required
+from werkzeug.security import check_password_hash
+from .models import User
+
+@app.route("/login", methods=["GET"])
+def login_get():
+    return render_template("login.html")
+
+@app.route("/login", methods=["POST"])
+def login_post():
+    email, password = request.form["email"], request.form["password"]
+    user = session.query(User).filter_by(email=email).first()
+    if not user or not check_password_hash(user.password, password):
+        flash("Incorrect username or password", "danger")
+        return redirect(url_for("login_get"))
+
+    login_user(user)
+    return redirect(request.args.get('next') or url_for("posts"))
 
 @app.route("/")
 @app.route("/page/<int:page>")
@@ -66,10 +86,12 @@ def edit_post_post(post_id):
     return redirect(url_for("post", post_id=post_id))
 
 @app.route("/post/add", methods=["GET"])
+@login_required
 def add_post_get():
     return render_template("add_post.html")
 
 @app.route("/post/add", methods=["POST"])
+@login_required
 def add_post_post():
     post = Post(
         title=request.form["title"],
