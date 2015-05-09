@@ -1,9 +1,6 @@
 import datetime
-
 from sqlalchemy import Column, Integer, String, Text, DateTime
-
 from .database import Base, engine
-
 from flask.ext.login import UserMixin
 
 class Post(Base):
