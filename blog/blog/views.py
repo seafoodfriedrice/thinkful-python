@@ -32,8 +32,11 @@ def login_post():
 
 @app.route("/logout")
 def logout():
-    logout_user()
-    return redirect(url_for('posts'))
+    if current_user.is_authenticated():
+        logout_user()
+        return render_template("logout.html")
+    else:
+        return redirect(url_for("login_get"))
 
 @app.route("/")
 @app.route("/page/<int:page>")
