@@ -12,6 +12,7 @@ from flask.ext.login import login_user
 from flask.ext.login import login_required
 from werkzeug.security import check_password_hash
 from .models import User
+from flask.ext.login import current_user
 
 @app.route("/login", methods=["GET"])
 def login_get():
@@ -96,6 +97,7 @@ def add_post_post():
     post = Post(
         title=request.form["title"],
         content=mistune.markdown(request.form["content"]),
+        author=current_user
     )
     session.add(post)
     session.commit()
