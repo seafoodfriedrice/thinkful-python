@@ -9,6 +9,7 @@ from .models import Post
 from sqlalchemy import update
 from flask import flash
 from flask.ext.login import login_user
+from flask.ext.login import logout_user
 from flask.ext.login import login_required
 from werkzeug.security import check_password_hash
 from .models import User
@@ -28,6 +29,11 @@ def login_post():
 
     login_user(user)
     return redirect(request.args.get('next') or url_for("posts"))
+
+@app.route("/logout")
+def logout():
+    logout_user()
+    return redirect(url_for('posts'))
 
 @app.route("/")
 @app.route("/page/<int:page>")
