@@ -68,11 +68,13 @@ def post(post_id):
     return render_template("post.html", post=post)
 
 @app.route("/post/<int:post_id>/delete", methods=["GET"])
+@login_required
 def delete_post_get(post_id):
     post = session.query(Post).filter(Post.id == post_id).first()
     return render_template("delete_post.html", post=post)
 
 @app.route("/post/<int:post_id>/delete", methods=["POST"])
+@login_required
 def delete_post_post(post_id):
     post = session.query(Post).filter(Post.id == post_id).first()
     session.delete(post)
@@ -80,11 +82,13 @@ def delete_post_post(post_id):
     return redirect(url_for("posts"))
 
 @app.route("/post/<int:post_id>/edit", methods=["GET"])
+@login_required
 def edit_post_get(post_id):
     post = session.query(Post).filter(Post.id == post_id).first()
     return render_template("edit_post.html", post=post)
 
 @app.route("/post/<int:post_id>/edit", methods=["POST"])
+@login_required
 def edit_post_post(post_id):
     post = session.query(Post).filter(Post.id == post_id).first()
     post.title, post.content = request.form["title"], request.form["content"]

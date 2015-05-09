@@ -1,4 +1,4 @@
-{% macro render_post(post, single=False) %}
+{% macro render_post(post, single=False, current_user) %}
 <div class="row">
     <div class="col-md-2 text-right metadata">
         <ul class="list-unstyled">
@@ -9,6 +9,7 @@
 		{{ post.author.name }}
 	    </li>
             {% if single %}
+	    {% if current_user.is_authenticated() %}
             <li>
                 <a href="{{ url_for('edit_post_get', post_id=post.id) }}">Edit</a>
             </li>
@@ -36,6 +37,7 @@
                 </div>
             </div>
              -->
+            {% endif %}
             {% endif %}
         </ul>
     </div>
