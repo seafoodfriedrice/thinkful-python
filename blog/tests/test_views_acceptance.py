@@ -43,7 +43,6 @@ class TestViews(unittest.TestCase):
         self.process.start()
         time.sleep(1)
 
-
     def tearDown(self):
         """ Test teardown """
         # Remove the tables and their data from the database
@@ -78,12 +77,22 @@ class TestViews(unittest.TestCase):
         self.browser.visit("http://127.0.0.1:5000/post/1/delete")
         delete = self.browser.find_by_css("button[type=submit]")
         delete.click()
-        self.assertEqual(self.browser.url, "http://127.0.0.1:5000/")
+        self.assertEqual(self.browser.url, u"http://127.0.0.1:5000/")
         """
         self.post = session.query(models.Post).filter(
                models.Post.title == "Test Post #1").first()
         self.assertIsNone(self.post)
         """
     
+    def testNoLoginDelete(self):
+        self.browser.visit("http://127.0.0.1:5000/post/1/delete")
+        login_url = u'http://127.0.0.1:5000/login?next=%2Fpost%2F1%2Fdelete'
+        self.assertEqual(self.browser.url, login_url)
+        """
+        self.post = session.query(models.Post).filter(
+               models.Post.title == "Test Post #1").first()
+        self.assertTrue(self.post)
+        """
+
 if __name__ == "__main__":
     unittest.main()
