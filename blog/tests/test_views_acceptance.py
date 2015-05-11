@@ -28,6 +28,17 @@ class TestViews(unittest.TestCase):
         session.add(self.user)
         session.commit()
 
+        # Create an example post with example user as author
+        self.author = session.query(models.User).filter(
+                      models.User.name == "Alice").first()
+        self.post = models.Post(
+            title="Test Post #1",
+            content="The quick brown fox jumps over the lazy dog.",
+            author=self.author
+        )
+        session.add(self.post)
+        session.commit()
+
         self.process = multiprocessing.Process(target=app.run)
         self.process.start()
         time.sleep(1)
@@ -58,5 +69,21 @@ class TestViews(unittest.TestCase):
         button.click()
         self.assertEqual(self.browser.url, "http://127.0.0.1:5000/login")
 
+    def testLoginDelete(self):
+        self.browser.visit("http://127.0.0.1:5000/login")
+        self.browser.fill("email", "alice@example.com")
+        self.browser.fill("password", "test")
+        button = self.browser.find_by_css("button[type=submit]")
+        button.click()
+        self.browser.visit("http://127.0.0.1:5000/post/1/delete")
+        delete = self.browser.find_by_css("button[type=submit]")
+        delete.click()
+        self.assertEqual(self.browser.url, "http://127.0.0.1:5000/")
+        """
+        self.post = session.query(models.Post).filter(
+               models.Post.title == "Test Post #1").first()
+        self.assertIsNone(self.post)
+        """
+    
 if __name__ == "__main__":
     unittest.main()
