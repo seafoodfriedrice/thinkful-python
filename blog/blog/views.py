@@ -77,20 +77,19 @@ def post(post_id):
         session.commit()
         return redirect(url_for("posts"))
 
-@app.route("/post/<int:post_id>/edit", methods=["GET"])
+@app.route("/post/<int:post_id>/edit", methods=["GET", "POST"])
 @login_required
-def edit_post_get(post_id):
-    post = session.query(Post).filter(Post.id == post_id).first()
-    return render_template("edit_post.html", post=post)
+def edit_post(post_id):
+    if request.method == "GET":
+        post = session.query(Post).filter(Post.id == post_id).first()
+        return render_template("edit_post.html", post=post)
 
-@app.route("/post/<int:post_id>/edit", methods=["POST"])
-@login_required
-def edit_post_post(post_id):
-    post = session.query(Post).filter(Post.id == post_id).first()
-    post.title, post.content = request.form["title"], request.form["content"]
-    session.add(post)
-    session.commit()
-    return redirect(url_for("post", post_id=post_id))
+    if request.method == "POST":
+        post = session.query(Post).filter(Post.id == post_id).first()
+        post.title, post.content = request.form["title"], request.form["content"]
+        session.add(post)
+        session.commit()
+        return redirect(url_for("post", post_id=post_id))
 
 @app.route("/post/add", methods=["GET", "POST"])
 @login_required
