@@ -65,24 +65,17 @@ def posts(page=1, paginate_by=10):
         total_pages=total_pages
     )
 
-@app.route("/post/<int:post_id>")
+@app.route("/post/<int:post_id>", methods=["GET", "POST"])
 def post(post_id):
-    post = session.query(Post).filter(Post.id == post_id).first()
-    return render_template("post.html", post=post)
+    if request.method == "GET":
+        post = session.query(Post).filter(Post.id == post_id).first()
+        return render_template("post.html", post=post)
 
-@app.route("/post/<int:post_id>/delete", methods=["GET"])
-@login_required
-def delete_post_get(post_id):
-    post = session.query(Post).filter(Post.id == post_id).first()
-    return render_template("delete_post.html", post=post)
-
-@app.route("/post/<int:post_id>/delete", methods=["POST"])
-@login_required
-def delete_post_post(post_id):
-    post = session.query(Post).filter(Post.id == post_id).first()
-    session.delete(post)
-    session.commit()
-    return redirect(url_for("posts"))
+    if request.method == "POST" and current_user.is_authenticated():
+        post = session.query(Post).filter(Post.id == post_id).first()
+        session.delete(post)
+        session.commit()
+        return redirect(url_for("posts"))
 
 @app.route("/post/<int:post_id>/edit", methods=["GET"])
 @login_required
